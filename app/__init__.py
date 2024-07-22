@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from variaveis import DevelopmentConfig
+from variaveis import DevelopmentConfig, ProductionConfig
 # from config import celery_init_app, create_app
 from celery import Celery, Task
 
@@ -23,7 +23,7 @@ celery_app = Celery(flask_app.name)
 celery_app.config_from_object(flask_app.config["CELERY"])
 celery_app.Task = FlaskTask
 
-flask_app.config.from_object(DevelopmentConfig)
+flask_app.config.from_object(ProductionConfig)
 
 
 db = SQLAlchemy(flask_app)
