@@ -6,3 +6,4 @@ migrations/
 test*.py
 .env
 settings.json
+variaveis.py
