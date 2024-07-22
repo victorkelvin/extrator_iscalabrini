@@ -1,0 +1,54 @@
+{% extends 'index.html' %}
+
+{% block main_content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}">
+<div class="drop-container">
+    <form action="/upload" method="post" enctype="multipart/form-data" accept=".pdf">
+        <div class="upload-div text-white text-center mb-3 form-group">
+            <span id="file-list" urlencode="no"></span>
+            <label class="text-center text-white form-control" for="file-input" id="file-input-label">
+                <h3>Arraste e solte os Diários em formato ".PDF"aqui ou clique para selecionar</h3>
+            </label>
+            <input class="upload-input form-control" type="file" multiple id="file-input" name="file" accept=".pdf">
+            <br>
+        </div>
+
+        <button id="submit-btn" class="btn btn-primary" type="submit">Iniciar Upload</button>
+        <br>
+    </form>
+</div>
+
+
+
+
+<script>
+
+    const fileInput = document.getElementById('file-input');
+    const fileInputLabel = document.getElementById('file-input-label');
+
+    function handleFileSelect(evt) {
+        var files = evt.target.files;
+        var output = document.getElementById('file-list');
+        output.innerHTML = '';
+
+        output.innerHTML = `<h3> ${fileInput.files.length} Arquivos selecionados </h3>`;
+
+    }
+
+
+    fileInput.addEventListener('change', handleFileSelect, false);
+
+    fileInput.addEventListener('change', ev => {
+        if (fileInput.value == '') {
+            document.getElementById('file-list').hidden = true
+            document.getElementById('file-input-label').hidden = false
+        } else {
+            document.getElementById('file-list').hidden = false
+            document.getElementById('file-input-label').hidden = true
+        }
+    })
+
+</script>
+
+
+{% endblock %}

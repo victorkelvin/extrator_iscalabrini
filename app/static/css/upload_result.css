@@ -1,0 +1,52 @@
+.upload-result-container {
+    display: flex;
+    width: 100vw;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    padding-bottom: 50px;
+    position: relative;
+    justify-content: center;
+}
+
+.upload-result-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    font-weight: bold;
+    letter-spacing: 1px;
+    line-height: 1em;
+}
+
+.status-column{
+    background-color: #eeeeee9c;
+    font-weight: bolder;
+    text-justify: center;
+}
+
+.upload-result-table th,
+.upload-result-table td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    width: 50%;
+}
+
+.upload-result-table th {
+    background-color: #f0f0f0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.upload-result-table th:first-child {
+    border-left: 1px solid #ddd;
+}
+
+.upload-result-table th:last-child {
+    border-right: 1px solid #ddd;
+}
+
+.upload-result-table tr:nth-child(even) {
+    background-color: #2B78E4;
+}

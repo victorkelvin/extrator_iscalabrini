@@ -1,0 +1,53 @@
+{% macro button(label, icon, value, extra_class) %}
+  <button class="{{ extra_class }} butao" name="button" value="{{ value }}"><i class="bi bi-{{ icon }}"></i>{{ label }}</button>
+{% endmacro %}
+
+{% macro show_publicacoes(publicacoes) %}
+<table id="result-table" class="result-table">
+    <tr>
+      <tr>
+        <th>*</th>
+        <th>Data Diário</th>
+        <th>Estado</th>
+        <th>Nome</th>
+        <th>CPF</th>
+        <th>Matrícula</th>
+        <th>Valor</th>
+      </tr>
+    </tr>
+    {% for publicacao in publicacoes %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ publicacao.data_diario or "" }}</td>
+        <td>{{ publicacao.uf or "" }}</td>
+        <td>{{ publicacao.nome or "" }}</td>
+        <td>{{ publicacao.cpf or "" }}</td>
+        <td>{{ publicacao.matricula or "" }}</td>
+        <td>R$ {{ publicacao.valor or "" }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <div class="export-btn-container">
+    <button id="export-btn" onclick="exportToXlsx()">Exportar para Excel</button>
+  </div>
+
+  
+{% endmacro %}
+
+{% macro display_pdf_results(results) %}
+<table id="upload-result-table" class="upload-result-table">
+  {% for result in results %}
+    <tr>
+      <td>{{ result.filename }}:</td>
+      <td class="status-column">
+        {% if result.valido %}
+          <span style="color: green;">Processando</span>
+        {% else %}
+          <span style="color: red;">Arquivo inválido (removido)</span>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
+{% endmacro %}

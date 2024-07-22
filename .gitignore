@@ -1,0 +1,8 @@
+*__pycache__/
+variaveis.
+.venv
+uploads/
+migrations/
+test*.py
+.env
+settings.json

@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+
+{% block main_content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/upload_result.css') }}">
+
+<div id="upload-result " class="upload-result-container text-center">
+    {% if results %}
+        {{macros.display_pdf_results(results)}}
+    {% else %}    
+        <h1 class="text-white">Nenhum arquivo carregado</h1>
+    {% endif %}
+
+</div>
+
+
+{% endblock %}

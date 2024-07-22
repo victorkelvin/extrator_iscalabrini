@@ -1,0 +1,77 @@
+.drop-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 70px);
+}
+
+.drop-container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: var(--font-family-noto-sans-sc);
+    /* width: 50%; */
+    height: 50%;
+}
+
+
+.upload-div {
+    border: 2px dashed #bbb;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    text-align: center;
+    color: #bbb;
+    /* width: 50%; */
+    /* height: 50%; */
+    max-width: 500px;
+    min-width: 400px;
+    /* adjust the max-width to your needs */
+    margin: 0 auto;
+    position: relative;
+    /* add this */
+    height: 80%;
+}
+
+.btn {
+    border: 1px solid #bbb;
+    background: transparent;
+    margin-bottom: 20px;
+}
+
+.upload-input {
+    font-family: var(--font-family-noto-sans-sc);
+    background: transparent;
+    border: transparent;
+    /* width: 100%; */
+    /* height: 100%; */
+    width: 100%;
+    /* add this */
+    height: 100%;
+    /* add this */
+    box-sizing: border-box;
+    /* add this */
+    position: absolute;
+    /* add this */
+    top: 0;
+    /* add this */
+    left: 0;
+    /* add this */
+    right: 0;
+    /* add this */
+    bottom: 0;
+    /* add this */
+    z-index: 1;
+    /* add this */
+    /* opacity: 0; */
+    opacity: 0;
+}
+
+.upload-div label {
+    background: transparent;
+    border: transparent;
+    font-family: var(--font-family-noto-sans-sc);
+}
+
+h3{
+    font-family: var(--font-family-noto-sans-sc);
+}
