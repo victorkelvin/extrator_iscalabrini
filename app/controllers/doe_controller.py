@@ -44,7 +44,7 @@ def verify_pdf(filepath: str):
             pdf_text = "\n".join(lines[:10])
             for matchstring in ESTADOS_MATCHSTRING:
                 if matchstring.lower() in pdf_text.lower():  # case-insensitive match
-                    if matchstring.lower() == "bahia":
+                    if matchstring.lower() == "estado da bahia":
                         if not "SUPLEMENTO" in pdf_text:
                             # async_extrator.delay(filepath)
                             # start_bahia(filepath)
