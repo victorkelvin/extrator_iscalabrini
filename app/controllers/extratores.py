@@ -64,7 +64,7 @@ def extrair_data(page):
 def start_bahia(filepath):
     matchstring = "conceder Aposentadoria"
     fim_pagina = "CÓPIA - Consulte informação oficial em www.dool.egba.ba.gov.br"
-    estado_db_id = 1
+    estado_db_id = 5
     print(f"INICIANDO EXTRATOR: {filepath}")
     try:
         with open(filepath, "rb") as file:
