@@ -103,7 +103,6 @@ def pesquisar(formValues):
     if valor_maximo:
         query = query.filter(TbPublicacoes.valor <= valor_maximo)
 
-    print(query)
     publicacoes = query.all()
     return publicacoes
 
@@ -141,6 +140,4 @@ def exportar_excel(form):
     # Close the workbook and return the Excel file as a response
     workbook.close()
     output.seek(0)
-    print(output)
-    # return send_file(output, as_attachment=True, attachment_filename='publicacoes.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     return output

@@ -22,7 +22,6 @@ def index():
 def search():
     lista_estados = TbEstados.query.all()
 
-    print("lista", lista_estados)
     return render_template("search.html", estados=lista_estados)
 
 

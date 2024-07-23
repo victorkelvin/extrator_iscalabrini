@@ -4,4 +4,4 @@
 call .venv\Scripts\activate
 
 :: Run Flask application
-run.py
+waitress-serve app:flask_app

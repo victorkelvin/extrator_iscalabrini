@@ -23,7 +23,7 @@ celery_app = Celery(flask_app.name)
 celery_app.config_from_object(flask_app.config["CELERY"])
 celery_app.Task = FlaskTask
 
-flask_app.config.from_object(ProductionConfig)
+flask_app.config.from_object(DevelopmentConfig)
 
 
 db = SQLAlchemy(flask_app)

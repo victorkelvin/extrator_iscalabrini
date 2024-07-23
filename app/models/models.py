@@ -46,6 +46,8 @@ class TbPublicacoes(db.Model):
     diario_id = db.Column(db.Integer, db.ForeignKey('tb_diarios.id'))
     lead_id = db.Column(db.Integer, db.ForeignKey('tb_leads.id'))
     matricula = db.Column(db.String(20))
+    orgao = db.Column(db.String(100))
+    cargo = db.Column(db.String(100))
     valor = db.Column(db.Float)
     diario = db.relationship('TbDiarios', foreign_keys=[diario_id])
     lead = db.relationship('TbLeads', foreign_keys=[lead_id])
