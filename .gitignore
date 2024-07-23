@@ -7,3 +7,4 @@ test*.py
 .env
 settings.json
 variaveis.py
+config.txt

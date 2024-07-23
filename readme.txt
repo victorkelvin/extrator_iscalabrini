@@ -34,7 +34,7 @@ wfastcgi-enable
 
 
 #Instalar PostgreSQL, criar database e usuário
-
+##Adicionar váriável de ambiente para psql
 create database iscalabrini_db
 create user <usuario> with encrypted password '<senha>';
 grant all privileges on database iscalabrini_db to <usuario>;
@@ -54,8 +54,8 @@ python -m venv .venv
 
 #executar scripts
 
-1_atualizar_db.bat
-2_atualizar.bat
+1_atualizar_server.bat
+2_atualizar_db.bat
 3_iniciar_worker.bat
 4_iniciar_webserver.bat
 
