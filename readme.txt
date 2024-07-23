@@ -23,6 +23,7 @@ git clone https://github.com/victorkelvin/extrator_iscalabrini .
 #Criar venv na pasta
 python -m venv .venv
 
+colar arquivo config.txt e variaveis.py no diretorio
 
 #executar scripts
 

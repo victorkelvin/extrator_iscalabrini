@@ -13,7 +13,3 @@ class ProductionConfig():
     CELERY_BROKER_URL = 'amqp://localhost:5672'
     CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
-
-
-
-
