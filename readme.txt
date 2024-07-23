@@ -12,9 +12,6 @@ create user <usuario> with encrypted password '<senha>';
 grant all privileges on database iscalabrini_db to <usuario>;
 
 
-# Executar rabbitmq no docker:
-docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.13-management
-
 # Criar pasta para sistema
 
 # Baixar repositorio do github na pasta
