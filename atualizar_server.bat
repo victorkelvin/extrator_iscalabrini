@@ -1,4 +1,4 @@
-@echo
+@echo off
 
 :: Set the repository URL and local path
 set REPO_URL=https://github.com/victorkelvin/extrator_iscalabrini.git
