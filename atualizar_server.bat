@@ -20,8 +20,6 @@ if not exist .git (
 call .venv\Scripts\activate.bat
 pip install -r requirements.txt
 
-start celery -A app worker --pool=solo -l INFO
-
 
 if %errorlevel% neq 0 (
     echo Error occurred. Press any key to exit...
