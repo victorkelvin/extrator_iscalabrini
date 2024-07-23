@@ -4,7 +4,7 @@
 call .venv\Scripts\activate
 
 :: Run Flask application
-waitress-serve app:flask_app
+waitress-serve --port=80 app:flask_app
 
 
 if %errorlevel% neq 0 (
