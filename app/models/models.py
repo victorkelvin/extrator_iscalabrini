@@ -45,6 +45,7 @@ class TbPublicacoes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     diario_id = db.Column(db.Integer, db.ForeignKey('tb_diarios.id'))
     lead_id = db.Column(db.Integer, db.ForeignKey('tb_leads.id'))
+    processo = db.Column(db.String(100))
     matricula = db.Column(db.String(20))
     orgao = db.Column(db.String(100))
     cargo = db.Column(db.String(100))

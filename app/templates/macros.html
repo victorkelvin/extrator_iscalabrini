@@ -10,6 +10,7 @@
         <th>Data Diário</th>
         <th>Estado</th>
         <th>Nome</th>
+        <th>nº Processo</th>
         <th>CPF</th>
         <th>Matrícula</th>
         <th>Valor</th>
@@ -21,6 +22,7 @@
         <td>{{ publicacao.data_diario or "" }}</td>
         <td>{{ publicacao.uf or "" }}</td>
         <td>{{ publicacao.nome or "" }}</td>
+        <td>{{ publicacao.processo or "" }}</td>
         <td>{{ publicacao.cpf or "" }}</td>
         <td>{{ publicacao.matricula or "" }}</td>
         <td>R$ {{ publicacao.valor or "" }}</td>
@@ -31,9 +33,10 @@
   <div class="export-btn-container">
     <button id="export-btn" onclick="exportToXlsx()">Exportar para Excel</button>
   </div>
-
   
 {% endmacro %}
+
+
 
 {% macro display_pdf_results(results) %}
 <table id="upload-result-table" class="upload-result-table">

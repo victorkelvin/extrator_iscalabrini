@@ -3,7 +3,7 @@ import re
 import os
 from celery import shared_task
 from app import db
-from app.models.models import TbEstados, TbDiarios, TbLeads, TbPublicacoes
+from app.models.models import TbDiarios, TbLeads, TbPublicacoes
 
 
 mes_map = {
@@ -22,29 +22,14 @@ mes_map = {
 }
 
 
-def extrator_default(pattern, text, matchgroup) -> str:
-    match = re.search(pattern, text)
-    if match:
-        return match.group(matchgroup).strip()
-    return None  # type: ignore
+# def extrator_default(pattern, text, matchgroup) -> str:
+#     match = re.search(pattern, text)
+#     if match:
+#         return match.group(matchgroup).strip()
+#     return None  # type: ignore
 
 
-# Extrator BAHIA ---------------
-
-
-def extrair_publicaoes(texto):
-    nome_pattern = r"(?<=discriminado\(s\):)([^,]+)"
-    matricula_pattern = r"matrícula +(\d+)"
-    proventos_pattern = r"proventos (proporcionais|integrais) - R\$(([\d.]+),([\d]+))"
-
-    nome = extrator_default(nome_pattern, texto, 1)
-    nome = re.sub(r"^I ", "", nome)
-    matricula = extrator_default(matricula_pattern, texto, 1)
-    valor = extrator_default(proventos_pattern, texto, 2)
-    valor = valor.replace(".", "").replace(",", ".")
-    return {"nome": nome, "matricula": matricula, "valor": valor}
-
-
+# # Extrator BAHIA ---------------
 def extrair_data(page):
     lines = page.split("\n")
     head_text = "\n".join(lines[:10])
@@ -60,59 +45,51 @@ def extrair_data(page):
     return data
 
 
-@shared_task()
-def start_bahia(filepath):
-    matchstring = "conceder Aposentadoria"
-    fim_pagina = "CÓPIA - Consulte informação oficial em www.dool.egba.ba.gov.br"
+@shared_task
+def bahia(filepath):
+    pattern = r"([\w\s\u0080-\uFFFF]+), proc. (\d+\.\d+\.\d+\.\d+-\d+),.*?(\d{8}),.*?\$?(\d+\.?\d+,\d+)"
+    regex = re.compile(pattern, re.DOTALL)
     estado_db_id = 5
     print(f"INICIANDO EXTRATOR: {filepath}")
     try:
         with open(filepath, "rb") as file:
-            reader = PdfReader(file)
-            # publicacoes.append(extrair_data(reader.pages[0].extract_text()))
+            reader = PdfReader(filepath)
             data_doe = extrair_data(reader.pages[0].extract_text())
             doe_exist = TbDiarios.query.filter_by(
                 data_diario=data_doe, estado_diario=estado_db_id
             ).first()
+
             if doe_exist:
                 file.close()
                 os.remove(filepath)
                 return "DOE já processado"
+
             novo_doe = TbDiarios(data_diario=data_doe, estado_diario=estado_db_id)  # type: ignore
             db.session.add(novo_doe)
             db.session.flush()
             doe_id = novo_doe.id
             db.session.commit()
-            for p, page in enumerate(reader.pages):
-                texto = page.extract_text()
-                lines = texto.split("\n")
-                for i, line in enumerate(lines):
-                    if matchstring in line:
-                        end = min(len(lines), i + 10)
-                        context = lines[i:end]
-                        if (
-                            context[-1] == fim_pagina
-                        ):  ### irá verificar se o texto esta no fim da página e irá realizar a leitura da proxima pagina para extrair o restante do texto
-                            maxline = 10 - len(context)
-                            prox_pagina = (
-                                reader.pages[p + 1]
-                                .extract_text()
-                                .split("\n")[2:maxline]
-                            )
-                            context.extend(prox_pagina)
 
-                        context = " ".join(context)
-                        context = context.replace("\n", "")
-                        publicacao = extrair_publicaoes(context)
-                        novo_lead = TbLeads(nome=publicacao["nome"])  # type: ignore
-                        db.session.add(novo_lead)
-                        db.session.flush()
-                        nova_publicacao = TbPublicacoes(diario_id=doe_id, lead_id=novo_lead.id, matricula=publicacao["matricula"], valor=publicacao["valor"])  # type: ignore
-                        db.session.add(nova_publicacao)
+            for page in reader.pages:
+                for match in regex.finditer(page.extract_text()):
+                    nome = match.group(1).rsplit("\n", 1)[
+                        -1
+                    ]  # remove leading whitespace and newline
+                    nome = nome.split()
+                    nome = " ".join(nome[1:])
+                    processo = match.group(2)
+                    matricula = match.group(3)
+                    valor = match.group(4)
+                    valor = valor.replace(".", "").replace(",", ".")
+                    novo_lead = TbLeads(nome=nome)  # type: ignore
+                    db.session.add(novo_lead)
+                    db.session.flush()
+                    nova_publicacao = TbPublicacoes(diario_id=doe_id, lead_id=novo_lead.id, processo=processo, matricula=matricula, valor=valor)  # type: ignore
+                    db.session.add(nova_publicacao)
 
     except Exception as e:
-        print(f"Error processing file: {e}")
-        return False
+        print(f"ERRO: {e}")
+        return
     db.session.commit()
     os.remove(filepath)
     return True

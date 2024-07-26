@@ -2,7 +2,7 @@ import os
 from flask import request
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfReader
-from .extratores import start_bahia
+from .extratores import bahia
 from io import BytesIO
 import xlsxwriter
 from app.models.models import TbEstados, TbDiarios, TbLeads, TbPublicacoes
@@ -48,7 +48,7 @@ def verify_pdf(filepath: str):
                         if not "SUPLEMENTO" in pdf_text:
                             # async_extrator.delay(filepath)
                             # start_bahia(filepath)
-                            start_bahia.delay(str(filepath)) # type: ignore
+                            bahia.delay(str(filepath)) 
                             return True
                         else:
                             return False
@@ -78,6 +78,7 @@ def pesquisar(formValues):
         func.to_char(TbDiarios.data_diario, 'DD/MM/YYYY').label('data_diario'),
         TbEstados.uf.label('uf'),
         TbLeads.nome.label('nome'),
+        TbPublicacoes.processo.label('processo'),
         TbLeads.cpf.label('cpf'),
         TbPublicacoes.matricula.label('matricula'),
         TbPublicacoes.valor.label('valor')
@@ -103,7 +104,7 @@ def pesquisar(formValues):
     if valor_maximo:
         query = query.filter(TbPublicacoes.valor <= valor_maximo)
 
-    publicacoes = query.all()
+    publicacoes = query.order_by(TbDiarios.data_diario.asc())
     return publicacoes
 
 def send_publicacoes(form):
