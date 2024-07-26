@@ -47,7 +47,7 @@ def extrair_data(page):
 
 @shared_task
 def bahia(filepath):
-    pattern = r"([\w\s\u0080-\uFFFF]+), proc. (\d+\.\d+\.\d+\.\d+-\d+),.*?(\d{8}),.*?\$?(\d+\.?\d+,\d+)"
+    pattern = r"([\w\s\u0080-\uFFFF]+), proc. (\d+\.\d+\.\d+\.\d+-\d+),.*?(\d{8}),.*?\$?(\d+\.?\d+,\d+)" # Quase 24h pra fazer 1 linha de código --', pqp!
     regex = re.compile(pattern, re.DOTALL)
     estado_db_id = 5
     print(f"INICIANDO EXTRATOR: {filepath}")
