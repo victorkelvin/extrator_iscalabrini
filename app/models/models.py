@@ -23,7 +23,7 @@ class TbDiarios(db.Model):
     estado = db.relationship('TbEstados', backref='diarios', lazy=True)
 
     def __repr__(self):
-        return f"TbDiarios('{self.data_diario}', '{self.estado}')"
+        return f"id: {self.id}, data_diario: {self.data_diario}, estado_diario: {self.estado_diario}"
     def toDict(self):
         return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs } # type: ignore
     

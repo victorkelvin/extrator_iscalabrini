@@ -49,6 +49,7 @@ def verify_pdf(filepath: str):
                             # async_extrator.delay(filepath)
                             # start_bahia(filepath)
                             bahia.delay(str(filepath)) 
+                            # bahia(filepath)
                             return True
                         else:
                             return False
@@ -125,13 +126,14 @@ def exportar_excel(form):
     worksheet = workbook.add_worksheet()
 
     # Write the data to the Excel file
-    header = ['Data Diário', 'Estado', 'Nome', 'CPF', 'Matrícula', 'Valor']
+    header = ['Data Diário', 'Estado', 'Nome', 'Processo', 'CPF', 'Matrícula', 'Valor']
     worksheet.write_row(0, 0, header)
     for i, publicacao in enumerate(publicacoes):
         row = [
             publicacao.data_diario,
             publicacao.uf,
             publicacao.nome,
+            publicacao.processo,
             publicacao.cpf,
             publicacao.matricula,
             publicacao.valor
