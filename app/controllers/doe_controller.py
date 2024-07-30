@@ -36,27 +36,35 @@ def save_pdf():
 
 
 def verify_pdf(filepath: str):
+    estados = TbEstados.query.all()
+    print(f"ESTADOS QUERY: {estados}")
     try:
         with open(filepath, "rb") as pdf_file:
             reader = PdfReader(pdf_file)
             page = reader.pages[0].extract_text()
             lines = page.split("\n")
             pdf_text = "\n".join(lines[:10])
-            for matchstring in ESTADOS_MATCHSTRING:
-                if matchstring.lower() in pdf_text.lower():  # case-insensitive match
-                    if matchstring.lower() == "bahia":
+
+            print(pdf_text)
+
+            for estado in estados:
+                estado_dict = estado.toDict()
+                print(f'  {estado_dict}')
+                if estado_dict['matchstring'] in pdf_text:  # case-sensitive match
+                    print(f'  {estado}')
+                    if estado_dict['id'] == 5:
                         if not "SUPLEMENTO" in pdf_text:
-                            # async_extrator.delay(filepath)
-                            # start_bahia(filepath)
                             bahia.delay(str(filepath)) 
-                            # bahia(filepath)
                             return True
+                        
                         else:
                             return False
+                    
+                    elif estado_dict['id'] == 13:
+                        return True
                     else:
                         return False
-                else:
-                    return False
+    
 
     except Exception as e:
         print(f"Error verifying PDF: {e}")
