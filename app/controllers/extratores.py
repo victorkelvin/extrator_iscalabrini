@@ -28,13 +28,11 @@ mes_map = {
 #         return match.group(matchgroup).strip()
 #     return None  # type: ignore
 
-
-# # Extrator BAHIA ---------------
 def extrair_data(page):
     lines = page.split("\n")
     head_text = "\n".join(lines[:10])
-    pattern = r"(\d+) DE ([A-ZÇ]+) DE (\d+)"
-    match = re.search(pattern, head_text)
+    pattern = r"(\d{2}) DE ([A-ZÇ]+) DE (\d{4})"
+    match = re.search(pattern, head_text.upper())
     if match:
         dia = match.group(1)
         month = match.group(2)
@@ -44,47 +42,46 @@ def extrair_data(page):
     data = f"{ano}-{mes}-{dia}"
     return data
 
+# # Extrator BAHIA ---------------
+
 
 @shared_task
-def bahia(filepath):
-    pattern = r"([\w\s\u0080-\uFFFF]+), proc. (\d+\.\d+\.\d+\.\d+-\d+|\d+),.*?(\d{8}),.*?\$?(\d+\.?\d+,\d+)" # Quase 24h pra fazer 1 linha de código --', pqp!
+def ba(filepath):
+    pattern = r"([\w\s\u0080-\uFFFF]+), proc. (\d+\.\d+\.\d+\.?\d+-\d+|\d+).*?(\d{8}|\d{2}\.?\d{3}\.?\d{3}-?\d{1}),.*?\$?(\d+\.?\d+,\d+)" # Quase 24h pra fazer 1 linha de código --', pqp!
     regex = re.compile(pattern, re.DOTALL)
     estado_db_id = 5
-    print(f"INICIANDO EXTRATOR: {filepath}")
+    print(f"INICIANDO EXTRATOR BAHIA: {filepath}")
     try:
-        with open(filepath, "rb") as file:
-            reader = PdfReader(filepath)
-            data_doe = extrair_data(reader.pages[0].extract_text())
-            diarios = TbDiarios.query.filter_by(
-                data_diario=data_doe, estado_diario=estado_db_id
-            ).first()
-            # diario_dict = [diario.toDict() for diario in diarios]  #type: ignore
-            if diarios:
-                doe_id = diarios.toDict()['id']
-            else:
-                novo_doe = TbDiarios(data_diario=data_doe, estado_diario=estado_db_id)  # type: ignore
-                db.session.add(novo_doe)
-                db.session.flush()
-                doe_id = novo_doe.id
-                db.session.commit()
+        reader = PdfReader(filepath)
+        data_doe = extrair_data(reader.pages[0].extract_text())
+        diarios = TbDiarios.query.filter_by(
+            data_diario=data_doe, estado_diario=estado_db_id
+        ).first()
 
-            for page in reader.pages:
-                for match in regex.finditer(page.extract_text()):
-                    nome = match.group(1).rsplit("\n", 1)[-1]  # remove leading whitespace and newline
-                    nome = nome.split()
-                    nome = " ".join(nome[1:])
-                    processo = match.group(2)
-                    matricula = match.group(3)
-                    valor = match.group(4)
-                    valor = valor.replace(".", "").replace(",", ".")
-                    publicao = TbPublicacoes.query.filter_by(diario_id=doe_id, processo = processo).first()
-                    if not publicao:
-                        novo_lead = TbLeads(nome=nome)  # type: ignore
-                        db.session.add(novo_lead)
-                        db.session.flush()
-                        print(novo_lead.id)
-                        nova_publicacao = TbPublicacoes(diario_id=doe_id, lead_id=novo_lead.id, processo=processo, matricula=matricula, valor=valor)  # type: ignore
-                        db.session.add(nova_publicacao)
+        if diarios:
+            doe_id = diarios.toDict()['id']
+        else:
+            novo_doe = TbDiarios(data_diario=data_doe, estado_diario=estado_db_id)  # type: ignore
+            db.session.add(novo_doe)
+            db.session.flush()
+            doe_id = novo_doe.id
+            db.session.commit()
+        for page in reader.pages:
+            for match in regex.finditer(page.extract_text()):
+                nome = match.group(1).rsplit("\n", 1)[-1]  # remove leading whitespace and newline
+                nome = re.sub(r'^\s?[IVX]*\s', '', nome)
+                processo = match.group(2)
+                matricula = match.group(3)
+                valor = match.group(4)
+                valor = valor.replace(".", "").replace(",", ".")
+                publicao = TbPublicacoes.query.filter_by(diario_id=doe_id, processo = processo).first()
+                if not publicao:
+                    novo_lead = TbLeads(nome=nome)  # type: ignore
+                    db.session.add(novo_lead)
+                    db.session.flush()
+                    print(novo_lead.id)
+                    nova_publicacao = TbPublicacoes(diario_id=doe_id, lead_id=novo_lead.id, processo=processo, matricula=matricula, valor=valor)  # type: ignore
+                    db.session.add(nova_publicacao)
 
     except Exception as e:
         print(f"ERRO: {e}")
@@ -92,3 +89,34 @@ def bahia(filepath):
     db.session.commit()
     os.remove(filepath)
     return True
+
+
+# # Extrator MATO GROSSO ---------------
+
+def mt(filepath):
+    pattern  = r'Processo.*(\d{4}\.?\d{1}\.?\d+),.*Aposenta'
+    regex = re.compile(pattern, re.DOTALL)
+    estado_db_id = 13
+    print(f"INICIANDO EXTRATOR BAHIA: {filepath}")
+    try:
+        reader = PdfReader(filepath)
+        data_doe = extrair_data(reader.pages[0].extract_text())
+        diarios = TbDiarios.query.filter_by(
+            data_diario=data_doe, estado_diario=estado_db_id
+        ).first()
+        
+        if diarios:
+            doe_id = diarios.toDict()['id']
+        else:
+            novo_doe = TbDiarios(data_diario=data_doe, estado_diario=estado_db_id)  # type: ignore
+            db.session.add(novo_doe)
+            db.session.flush()
+            doe_id = novo_doe.id
+            db.session.commit()
+        for page in reader.pages:
+            for match in regex.finditer(page.extract_text()):
+                print(match.group(0))
+    except Exception as e:
+        print(f"ERRO: {e}")
+        return False
+    

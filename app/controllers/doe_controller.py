@@ -2,7 +2,7 @@ import os
 from flask import request
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfReader
-from .extratores import bahia
+from .extratores import ba, mt
 from io import BytesIO
 import xlsxwriter
 from app.models.models import TbEstados, TbDiarios, TbLeads, TbPublicacoes
@@ -10,7 +10,6 @@ from sqlalchemy import func
 from app import db
 
 UPLOAD_FOLDER = "uploads/"  # adjust the upload folder path as needed
-ESTADOS_MATCHSTRING = ["bahia"]
 
 
 def save_pdf():
@@ -37,7 +36,6 @@ def save_pdf():
 
 def verify_pdf(filepath: str):
     estados = TbEstados.query.all()
-    print(f"ESTADOS QUERY: {estados}")
     try:
         with open(filepath, "rb") as pdf_file:
             reader = PdfReader(pdf_file)
@@ -45,23 +43,20 @@ def verify_pdf(filepath: str):
             lines = page.split("\n")
             pdf_text = "\n".join(lines[:10])
 
-            print(pdf_text)
-
             for estado in estados:
                 estado_dict = estado.toDict()
-                print(f'  {estado_dict}')
                 if estado_dict['matchstring'] in pdf_text:  # case-sensitive match
-                    print(f'  {estado}')
                     if estado_dict['id'] == 5:
                         if not "SUPLEMENTO" in pdf_text:
-                            bahia.delay(str(filepath)) 
+                            ba.delay(str(filepath)) 
                             return True
                         
                         else:
                             return False
                     
-                    elif estado_dict['id'] == 13:
-                        return True
+                    # elif estado_dict['id'] == 13:
+                    #     mt(str(filepath))
+                    #     return True
                     else:
                         return False
     
