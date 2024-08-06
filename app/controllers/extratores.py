@@ -29,10 +29,9 @@ mes_map = {
 #     return None  # type: ignore
 
 def extrair_data(page):
-    lines = page.split("\n")
-    head_text = "\n".join(lines[:10])
-    pattern = r"(\d{2}) DE ([A-ZÇ]+) DE (\d{4})"
-    match = re.search(pattern, head_text.upper())
+    pattern = r"(\d{1,2}) DE ([A-ZÇ]+) DE (\d{4})"
+    match = re.search(pattern, page.upper())
+    print(page)
     if match:
         dia = match.group(1)
         month = match.group(2)
@@ -53,7 +52,9 @@ def ba(filepath):
     print(f"INICIANDO EXTRATOR BAHIA: {filepath}")
     try:
         reader = PdfReader(filepath)
-        data_doe = extrair_data(reader.pages[0].extract_text())
+        data_page = reader.pages[0].extract_text().split("\n")
+        data_doe = extrair_data('\n'.join(data_page[:3]))
+        print(f"DATA DOE: {data_doe}")
         diarios = TbDiarios.query.filter_by(
             data_diario=data_doe, estado_diario=estado_db_id
         ).first()
@@ -85,7 +86,7 @@ def ba(filepath):
 
     except Exception as e:
         print(f"ERRO: {e}")
-        return
+        return False
     db.session.commit()
     os.remove(filepath)
     return True
@@ -93,30 +94,30 @@ def ba(filepath):
 
 # # Extrator MATO GROSSO ---------------
 
-def mt(filepath):
-    pattern  = r'Processo.*(\d{4}\.?\d{1}\.?\d+),.*Aposenta'
-    regex = re.compile(pattern, re.DOTALL)
-    estado_db_id = 13
-    print(f"INICIANDO EXTRATOR BAHIA: {filepath}")
-    try:
-        reader = PdfReader(filepath)
-        data_doe = extrair_data(reader.pages[0].extract_text())
-        diarios = TbDiarios.query.filter_by(
-            data_diario=data_doe, estado_diario=estado_db_id
-        ).first()
+# def mt(filepath):
+#     pattern  = r'Processo.*(\d{4}\.?\d{1}\.?\d+),.*Aposenta'
+#     regex = re.compile(pattern, re.DOTALL)
+#     estado_db_id = 13
+#     print(f"INICIANDO EXTRATOR BAHIA: {filepath}")
+#     try:
+#         reader = PdfReader(filepath)
+#         data_doe = extrair_data(reader.pages[0].extract_text())
+#         diarios = TbDiarios.query.filter_by(
+#             data_diario=data_doe, estado_diario=estado_db_id
+#         ).first()
         
-        if diarios:
-            doe_id = diarios.toDict()['id']
-        else:
-            novo_doe = TbDiarios(data_diario=data_doe, estado_diario=estado_db_id)  # type: ignore
-            db.session.add(novo_doe)
-            db.session.flush()
-            doe_id = novo_doe.id
-            db.session.commit()
-        for page in reader.pages:
-            for match in regex.finditer(page.extract_text()):
-                print(match.group(0))
-    except Exception as e:
-        print(f"ERRO: {e}")
-        return False
+#         if diarios:
+#             doe_id = diarios.toDict()['id']
+#         else:
+#             novo_doe = TbDiarios(data_diario=data_doe, estado_diario=estado_db_id)  # type: ignore
+#             db.session.add(novo_doe)
+#             db.session.flush()
+#             doe_id = novo_doe.id
+#             db.session.commit()
+#         for page in reader.pages:
+#             for match in regex.finditer(page.extract_text()):
+#                 print(match.group(0))
+#     except Exception as e:
+#         print(f"ERRO: {e}")
+#         return False
     

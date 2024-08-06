@@ -2,7 +2,7 @@ import os
 from flask import request
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfReader
-from .extratores import ba, mt
+from .extratores import ba
 from io import BytesIO
 import xlsxwriter
 from app.models.models import TbEstados, TbDiarios, TbLeads, TbPublicacoes
