@@ -8,7 +8,7 @@
   
   .searchbar {
     font-family: "Noto Sans SC", sans-serif;
-    width: 30vw;
+    width: 20vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -58,7 +58,7 @@
   .search-result{
     display: block;
     background: rgba(255, 255, 255, 0.2);
-    width: 70vw;
+    width: 80vw;
     height: 100%;
     box-sizing: border-box;
     padding: 10px;

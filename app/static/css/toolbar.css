@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   background-color: rgb(0, 0, 0);
-  width: 30vw;
+  width: 20vw;
   height: 60px;
   justify-content: center;
 }
@@ -38,7 +38,7 @@ background: radial-gradient(circle, rgb(255, 255, 255, 1) 0%, rgb(255, 255, 255,
 }
 
 .toolbar form{
-  width: 69%;
+  width: 80vw;
   margin-left: 10px;
 }
 
