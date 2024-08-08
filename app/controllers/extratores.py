@@ -31,7 +31,6 @@ mes_map = {
 def extrair_data(page):
     pattern = r"(\d{1,2}) DE ([A-ZÇ]+) DE (\d{4})"
     match = re.search(pattern, page.upper())
-    print(page)
     if match:
         dia = match.group(1)
         month = match.group(2)
@@ -67,8 +66,13 @@ def ba(filepath):
             db.session.flush()
             doe_id = novo_doe.id
             db.session.commit()
-        for page in reader.pages:
-            for match in regex.finditer(page.extract_text()):
+        for i, page in enumerate(reader.pages):
+            if i + 1 == len(reader.pages):
+                text = page.extract_text()
+            else:
+                text = page.extract_text() + reader.pages[i+1].extract_text()
+
+            for match in regex.finditer(text):
                 nome = match.group(1).rsplit("\n", 1)[-1]  # remove leading whitespace and newline
                 nome = re.sub(r'^\s?[IVX]*\s', '', nome)
                 processo = match.group(2)
@@ -80,7 +84,6 @@ def ba(filepath):
                     novo_lead = TbLeads(nome=nome)  # type: ignore
                     db.session.add(novo_lead)
                     db.session.flush()
-                    print(novo_lead.id)
                     nova_publicacao = TbPublicacoes(diario_id=doe_id, lead_id=novo_lead.id, processo=processo, matricula=matricula, valor=valor)  # type: ignore
                     db.session.add(nova_publicacao)
 
