@@ -29,13 +29,14 @@ mes_map = {
 #     return None  # type: ignore
 
 def extrair_data(page):
-    pattern = r"(\d{1,2}) DE ([A-ZÇ]+) DE (\d{4})"
+    pattern = r"(\d+|1º) DE ([A-ZÇ]+) DE (\d{4})"
     match = re.search(pattern, page.upper())
     if match:
         dia = match.group(1)
         month = match.group(2)
         ano = match.group(3)
-
+        if dia == '1º':
+            dia = '01'
     mes = mes_map[month]
     data = f"{ano}-{mes}-{dia}"
     return data
