@@ -46,5 +46,5 @@ def upload_doe():
 
 @flask_app.route('/export_to_xlsx', methods=["post"])
 def export_to_xlsx():
-    publicacoes = exportar_excel(request.form)
+    publicacoes = exportar_excel()
     return send_file(publicacoes, as_attachment=True, download_name='publicacoes.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

@@ -11,7 +11,6 @@ from app import db
 
 UPLOAD_FOLDER = "uploads/"  # adjust the upload folder path as needed
 
-
 def save_pdf():
     files = request.files.getlist("file")
     result_list = []
@@ -67,8 +66,10 @@ def verify_pdf(filepath: str):
     
 
 
+pesquisa_pub = None
 
 def pesquisar(formValues):
+    global pesquisa_pub
     """ Pesquisar as publicações no db de acordo com os filtros fornecidos  """
     estado_id = formValues['estado']
     nome = formValues['nome']
@@ -109,6 +110,7 @@ def pesquisar(formValues):
         query = query.filter(TbPublicacoes.valor <= valor_maximo)
 
     publicacoes = query.order_by(TbDiarios.data_diario.asc())
+    pesquisa_pub = publicacoes
     return publicacoes
 
 def send_publicacoes(form):
@@ -119,9 +121,8 @@ def send_publicacoes(form):
 
 
 
-def exportar_excel(form):
+def exportar_excel():
     # Assuming you have a function to retrieve the data from the database
-    publicacoes = pesquisar(form)
 
     # Create an in-memory Excel file
     output = BytesIO()
@@ -131,7 +132,7 @@ def exportar_excel(form):
     # Write the data to the Excel file
     header = ['Data Diário', 'Estado', 'Nome', 'Processo', 'CPF', 'Matrícula', 'Valor']
     worksheet.write_row(0, 0, header)
-    for i, publicacao in enumerate(publicacoes):
+    for i, publicacao in enumerate(pesquisa_pub): # type: ignore
         row = [
             publicacao.data_diario,
             publicacao.uf,
