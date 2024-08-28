@@ -29,7 +29,6 @@
       <input type="date" id="data-publicacao-de" name="data-publicacao-de" value="" min="" max="">
       <br>
       <label for="data-publicacao-ate">Datal final</label>
-      <span></span>
       <input type="date" id="data-publicacao-ate" name="data-publicacao-ate" value="" min="" max="">
       <br>
       <label for="valor-minimo">Valor</label>
@@ -60,6 +59,34 @@
 </div>
 
 <script>
+
+  console.log({{form_data | tojson}});
+  // Get the form elements
+const form = document.getElementById('search-form');
+const estadoSelect = document.getElementById('estado');
+const nomeInput = document.getElementById('nome');
+const cpfInput = document.getElementById('cpf');
+const dataPublicacaoDeInput = document.getElementById('data-publicacao-de');
+const dataPublicacaoAteInput = document.getElementById('data-publicacao-ate');
+const valorMinimoInput = document.getElementById('valor-minimo');
+const valorMaximoInput = document.getElementById('valor-maximo');
+
+const savedValues = {{form_data | tojson}};
+// Check if there is a saved session
+if (savedValues) {
+  // Retrieve the saved values
+  // Populate the form fields
+  estadoSelect.value = savedValues.estado;
+  nomeInput.value = savedValues.nome;
+  cpfInput.value = savedValues.cpf;
+  dataPublicacaoDeInput.value = savedValues.dataPublicacaoDe;
+  dataPublicacaoAteInput.value = savedValues.dataPublicacaoAte;
+  valorMinimoInput.value = savedValues.valorMinimo;
+  valorMaximoInput.value = savedValues.valorMaximo;
+}
+</script>
+
+<script>
   function exportToXlsx() {
     var formData = new FormData(document.getElementById('search-form'));
     var xhr = new XMLHttpRequest();
@@ -76,21 +103,6 @@
       }
     };
     xhr.send(formData);
-  }
-
-  // Get the form data from session storage
-  const formData = sessionStorage.getItem('form_data');
-
-  // If form data exists, populate the form fields
-  if (formData) {
-    const jsonData = JSON.parse(formData);
-    document.getElementById('estado').value = jsonData.estado;
-    document.getElementById('nome').value = jsonData.nome;
-    document.getElementById('cpf').value = jsonData.cpf;
-    document.getElementById('data-publicacao-de').value = jsonData.dataPublicacaoDe;
-    document.getElementById('data-publicacao-ate').value = jsonData.dataPublicacaoAte;
-    document.getElementById('valor-minimo').value = jsonData.valorMinimo;
-    document.getElementById('valor-maximo').value = jsonData.valorMaximo;
   }
 </script>
 
