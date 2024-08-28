@@ -21,29 +21,29 @@ def index():
 @flask_app.route("/search")
 def search():
     lista_estados = TbEstados.query.all()
-    if 'form_data' in session:
-        form_data = session.get('searchFormValues')
-    else:
-        form_data = {}  # default value if form_data is not set
-    return render_template("search.html", estados=lista_estados, form_data=form_data)
+    # if 'form_data' in session:
+    #     form_data = session.get('searchFormValues')
+    # else:
+    #     form_data = {}  # default value if form_data is not set
+    return render_template("search.html", estados=lista_estados)
 
 @flask_app.route("/search_result", methods=["post"])  # type: ignore
 def search_result():
     if request.method == "POST":
 
         lista_estados = TbEstados.query.all()
-        form_values = {
-        'estado': request.form['estado'],
-        'nome': request.form['nome'],
-        'cpf': request.form['cpf'],
-        'dataPublicacaoDe': request.form['data-publicacao-de'],
-        'dataPublicacaoAte': request.form['data-publicacao-ate'],
-        'valorMinimo': request.form['valor-minimo'],
-        'valorMaximo': request.form['valor-maximo']
-    }
-        session['searchFormValues'] = form_values
+    #     form_values = {
+    #     'estado': request.form['estado'],
+    #     'nome': request.form['nome'],
+    #     'cpf': request.form['cpf'],
+    #     'dataPublicacaoDe': request.form['data-publicacao-de'],
+    #     'dataPublicacaoAte': request.form['data-publicacao-ate'],
+    #     'valorMinimo': request.form['valor-minimo'],
+    #     'valorMaximo': request.form['valor-maximo']
+    # }
+        # session['searchFormValues'] = form_values
         publicacoes = pesquisar(request.form)
-        return render_template('search.html', publicacoes=publicacoes, estados=lista_estados, form_data = form_values)
+        return render_template('search.html', publicacoes=publicacoes, estados=lista_estados)
 
 
 
