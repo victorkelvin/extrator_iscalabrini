@@ -41,10 +41,9 @@ def verify_pdf(filepath: str):
             page = reader.pages[0].extract_text()
             lines = page.split("\n")
             pdf_text = "\n".join(lines[:10])
-
             for estado in estados:
                 estado_dict = estado.toDict()
-                if estado_dict['matchstring'] in pdf_text:  # case-sensitive match
+                if estado_dict['matchstring'].upper() in pdf_text.upper():  # case-insensitive match
                     if estado_dict['id'] == 5:
                         if not "SUPLEMENTO" in pdf_text:
                             ba.delay(str(filepath)) 
