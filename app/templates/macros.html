@@ -11,10 +11,10 @@
       <th>Nome</th>
       <th>nº Processo</th>
       <th>CPF</th>
-      <th>Cargo</th>
-      <th>Tempo de Serviço</th>
       <th>Matrícula</th>
+      <th>Cargo</th>
       <th>Valor</th>
+      <th>Tempo de Serviço</th>
     </tr>
     {% for publicacao in publicacoes %}
       <tr>
@@ -25,8 +25,8 @@
         <td>{{ publicacao.processo or "" }}</td>
         <td>{{ publicacao.cpf or "" }}</td>
         <td>{{ publicacao.matricula or "" }}</td>
-        <td>R$ {{ publicacao.valor or "" }}</td>
         <td>{{ publicacao.cargo or "" }}</td>
+        <td>R$ {{ publicacao.valor or "" }}</td>
         <td>{{ publicacao.tempo_servico or "" }} Anos</td>
       </tr>
     {% endfor %}
