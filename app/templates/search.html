@@ -5,79 +5,94 @@
 
 
 <div class="search-container">
-    <div class="searchbar text-white">
-        <h3><i class="bi bi-funnel"></i> Filtros</h3>
-        <form id="search-form" action="/search_result" method="post">
-            <label for="estado">Estado</label>
-            <select id="estado" name="estado">
-                <!-- options will be populated dynamically or hardcoded here -->
-                {% for estado in estados %}
-                <option value="{{ estado.id }}">{{ estado.uf }}</option>
-                {% endfor %}
-                <!--... -->
-            </select>
-            <br>
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" name="nome">
-            <br>
-            <label for="cpf">CPF</label>
-            <input type="text" id="cpf" name="cpf" placeholder="Formato: xxxxxxxxxxx" maxlength="11">
-            <br>
-            <label for="data-publicacao-de">Data publicação DOE</label>
-            <br>
-            <label for="data-publicacao-de">Data inicial</label>
-            <input type="date" id="data-publicacao-de" name="data-publicacao-de" value="" min="" max="">
-            <br>
-            <label for="data-publicacao-ate">Datal final</label>
-            <span></span>
-            <input type="date" id="data-publicacao-ate" name="data-publicacao-ate" value="" min="" max="">
-            <br>
-            <label for="valor-minimo">Valor</label>
-            <br>
-            <label for="valor-minimo">Mínimo</label>
-            <span>R$</span>
-            <input type="number" id="valor-minimo" name="valor-minimo" step="0.01" min="0" max="" placeholder="99,9">
-            <br>
-            <label for="valor-maximo">Máximo</label>
-            <span>R$</span>
-            <input type="number" id="valor-maximo" name="valor-maximo" step="0.01" min="0" max="" placeholder="99,9">
-            <br>
-            <br>
-            <br>
-            <button type="submit" class="btn btn-primary" style="margin: 0 auto; display: block;"><i
-                    class="bi bi-search"></i>Pesquisar</button>
+  <div class="searchbar text-white">
+    <h3><i class="bi bi-funnel"></i> Filtros</h3>
+    <form id="search-form" action="/search_result" method="post">
+      <label for="estado">Estado</label>
+      <select id="estado" name="estado">
+        <!-- options will be populated dynamically or hardcoded here -->
+        {% for estado in estados %}
+          <option value="{{ estado.id }}">{{ estado.uf }}</option>
+        {% endfor %}
+        <!--... -->
+      </select>
+      <br>
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" name="nome">
+      <br>
+      <label for="cpf">CPF</label>
+      <input type="text" id="cpf" name="cpf" placeholder="Formato: xxxxxxxxxxx" maxlength="11">
+      <br>
+      <label for="data-publicacao-de">Data publicação DOE</label>
+      <br>
+      <label for="data-publicacao-de">Data inicial</label>
+      <input type="date" id="data-publicacao-de" name="data-publicacao-de" value="" min="" max="">
+      <br>
+      <label for="data-publicacao-ate">Datal final</label>
+      <span></span>
+      <input type="date" id="data-publicacao-ate" name="data-publicacao-ate" value="" min="" max="">
+      <br>
+      <label for="valor-minimo">Valor</label>
+      <br>
+      <label for="valor-minimo">Mínimo</label>
+      <span>R$</span>
+      <input type="number" id="valor-minimo" name="valor-minimo" step="0.01" min="0" max="" placeholder="99,9">
+      <br>
+      <label for="valor-maximo">Máximo</label>
+      <span>R$</span>
+      <input type="number" id="valor-maximo" name="valor-maximo" step="0.01" min="0" max="" placeholder="99,9">
+      <br>
+      <br>
+      <br>
+      <button type="submit" class="btn btn-primary" style="margin: 0 auto; display: block;"><i
+          class="bi bi-search"></i>Pesquisar</button>
 
 
-        </form>
+    </form>
 
-    </div>
-    <div class="column-separator"></div>
-    <div class="search-result ">
-        {% if publicacoes %}
-            {{ macros.show_publicacoes(publicacoes) }}
-        {% endif %}
-    </div>
+  </div>
+  <div class="column-separator"></div>
+  <div class="search-result ">
+    {% if publicacoes %}
+      {{ macros.show_publicacoes(publicacoes) }}
+    {% endif %}
+  </div>
 </div>
 
 <script>
-    function exportToXlsx() {
-      var formData = new FormData(document.getElementById('search-form'));
-      var xhr = new XMLHttpRequest();
+  function exportToXlsx() {
+    var formData = new FormData(document.getElementById('search-form'));
+    var xhr = new XMLHttpRequest();
 
-      xhr.open('post', '/export_to_xlsx', true);
-      xhr.responseType = 'blob';
-      xhr.onload = function(e) {
-        if (xhr.status === 200) {
-          var blob = new Blob([xhr.response], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-          var link = document.createElement('a');
-          link.href = window.URL.createObjectURL(blob);
-          link.download = 'publicacoes.xlsx';
-          link.click();
-        }
-      };
-      xhr.send(formData);
-    }
-  </script>
+    xhr.open('post', '/export_to_xlsx', true);
+    xhr.responseType = 'blob';
+    xhr.onload = function (e) {
+      if (xhr.status === 200) {
+        var blob = new Blob([xhr.response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'publicacoes.xlsx';
+        link.click();
+      }
+    };
+    xhr.send(formData);
+  }
+
+  // Get the form data from session storage
+  const formData = sessionStorage.getItem('form_data');
+
+  // If form data exists, populate the form fields
+  if (formData) {
+    const jsonData = JSON.parse(formData);
+    document.getElementById('estado').value = jsonData.estado;
+    document.getElementById('nome').value = jsonData.nome;
+    document.getElementById('cpf').value = jsonData.cpf;
+    document.getElementById('data-publicacao-de').value = jsonData.dataPublicacaoDe;
+    document.getElementById('data-publicacao-ate').value = jsonData.dataPublicacaoAte;
+    document.getElementById('valor-minimo').value = jsonData.valorMinimo;
+    document.getElementById('valor-maximo').value = jsonData.valorMaximo;
+  }
+</script>
 
 
 {% endblock %}

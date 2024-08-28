@@ -1,4 +1,4 @@
-from flask import render_template, request, send_file
+from flask import render_template, request, send_file, session
 import os
 from .doe_controller import save_pdf, exportar_excel, pesquisar
 from app import flask_app
@@ -21,8 +21,8 @@ def index():
 @flask_app.route("/search")
 def search():
     lista_estados = TbEstados.query.all()
-
-    return render_template("search.html", estados=lista_estados)
+    form_data = session.get('form_data')
+    return render_template("search.html", estados=lista_estados, form_data = form_data )
 
 
 @flask_app.route("/search_result", methods=["post"])  # type: ignore
@@ -32,6 +32,7 @@ def search_result():
         lista_estados = TbEstados.query.all()
 
         form = request.form
+        session['form_data'] = form
         publicacoes = pesquisar(form)
         return render_template('search.html', publicacoes=publicacoes, estados=lista_estados)
 

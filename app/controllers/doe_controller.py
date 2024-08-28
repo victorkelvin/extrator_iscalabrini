@@ -2,7 +2,7 @@ import os
 from flask import request
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfReader
-from .extratores import ba
+from .extratores import ba, mt
 from io import BytesIO
 import xlsxwriter
 from app.models.models import TbEstados, TbDiarios, TbLeads, TbPublicacoes
@@ -49,13 +49,12 @@ def verify_pdf(filepath: str):
                         if not "SUPLEMENTO" in pdf_text:
                             ba.delay(str(filepath)) 
                             return True
-                        
                         else:
                             return False
                     
-                    # elif estado_dict['id'] == 13:
-                    #     mt(str(filepath))
-                    #     return True
+                    elif estado_dict['id'] == 13:
+                        mt.delay(str(filepath))
+                        return True
                     else:
                         return False
     
@@ -86,7 +85,9 @@ def pesquisar(formValues):
         TbPublicacoes.processo.label('processo'),
         TbLeads.cpf.label('cpf'),
         TbPublicacoes.matricula.label('matricula'),
-        TbPublicacoes.valor.label('valor')
+        TbPublicacoes.valor.label('valor'),
+        TbPublicacoes.cargo.label('cargo'),
+        TbPublicacoes.tempo_servico.label('tempo_servico')
     ).select_from(TbPublicacoes).join(
         TbDiarios, TbPublicacoes.diario_id == TbDiarios.id
     ).join(
@@ -140,7 +141,9 @@ def exportar_excel():
             publicacao.processo,
             publicacao.cpf,
             publicacao.matricula,
-            publicacao.valor
+            publicacao.valor,
+            publicacao.cargo,
+            publicacao.tempo_servico
         ]
         worksheet.write_row(i + 1, 0, row)
 

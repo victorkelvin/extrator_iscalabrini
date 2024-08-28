@@ -12,8 +12,14 @@
         <th>Nome</th>
         <th>nº Processo</th>
         <th>CPF</th>
-        <th>Matrícula</th>
-        <th>Valor</th>
+        {% if publicacoes[0].uf == 'BA' %}
+          <th>Matrícula</th>
+          <th>Valor</th>
+        {% elif publicacoes[0].uf == 'MT' %}
+          <th>Cargo</th>
+          <th>Tempo de Serviço</th>
+        {% endif %}
+        
       </tr>
     </tr>
     {% for publicacao in publicacoes %}
@@ -24,8 +30,13 @@
         <td>{{ publicacao.nome or "" }}</td>
         <td>{{ publicacao.processo or "" }}</td>
         <td>{{ publicacao.cpf or "" }}</td>
-        <td>{{ publicacao.matricula or "" }}</td>
-        <td>R$ {{ publicacao.valor or "" }}</td>
+          {% if publicacao.uf == 'BA' %}
+            <td>{{ publicacao.matricula or "" }}</td>
+            <td>R$ {{ publicacao.valor or "" }}</td>
+          {% elif publicacao.uf == 'MT' %}
+            <td>{{ publicacao.cargo or "" }}</td>
+            <td>{{ publicacao.tempo_servico or "" }} Anos</td>
+          {% endif %}
       </tr>
     {% endfor %}
   </table>

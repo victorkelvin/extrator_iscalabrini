@@ -33,7 +33,7 @@ class TbDiarios(db.Model):
 class TbLeads(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(250), nullable=False)
-    cpf = db.Column(db.String(11))
+    cpf = db.Column(db.String(14))
 
     def __repr__(self):
         return f"TbLeads('{self.nome}', '{self.cpf}')"
@@ -49,6 +49,7 @@ class TbPublicacoes(db.Model):
     matricula = db.Column(db.String(20))
     orgao = db.Column(db.String(100))
     cargo = db.Column(db.String(100))
+    tempo_servico = db.Column(db.Integer)
     valor = db.Column(db.Float)
     diario = db.relationship('TbDiarios', foreign_keys=[diario_id])
     lead = db.relationship('TbLeads', foreign_keys=[lead_id])

@@ -24,7 +24,7 @@ celery_app.config_from_object(flask_app.config["CELERY"])
 celery_app.Task = FlaskTask
 
 flask_app.config.from_object(DevelopmentConfig)
-
+flask_app.secret_key = 'iscalabrini_session_storage'
 
 db = SQLAlchemy(flask_app)
 migrate = Migrate(flask_app, db)
