@@ -12,12 +12,12 @@
         <th>Nome</th>
         <th>nº Processo</th>
         <th>CPF</th>
-        {% if publicacoes[0].uf == 'BA' %}
-          <th>Matrícula</th>
-          <th>Valor</th>
-        {% elif publicacoes[0].uf == 'MT' %}
+        {% if publicacoes[0].uf == 'MT' %}
           <th>Cargo</th>
           <th>Tempo de Serviço</th>
+        {% else %}
+          <th>Matrícula</th>
+          <th>Valor</th>
         {% endif %}
         
       </tr>
