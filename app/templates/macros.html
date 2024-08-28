@@ -3,24 +3,21 @@
 {% endmacro %}
 
 {% macro show_publicacoes(publicacoes) %}
-<table id="result-table" class="result-table">
+  <table id="result-table" class="result-table">
     <tr>
-      <tr>
-        <th>*</th>
-        <th>Data Diário</th>
-        <th>Estado</th>
-        <th>Nome</th>
-        <th>nº Processo</th>
-        <th>CPF</th>
-        {% if publicacoes[0].uf == 'MT' %}
-          <th>Cargo</th>
-          <th>Tempo de Serviço</th>
-        {% else %}
-          <th>Matrícula</th>
-          <th>Valor</th>
-        {% endif %}
-        
-      </tr>
+      <th>*</th>
+      <th>Data Diário</th>
+      <th>Estado</th>
+      <th>Nome</th>
+      <th>nº Processo</th>
+      <th>CPF</th>
+      {% if publicacoes|length > 0 and publicacoes[0].uf == 'MT' %}
+        <th>Cargo</th>
+        <th>Tempo de Serviço</th>
+      {% else %}
+        <th>Matrícula</th>
+        <th>Valor</th>
+      {% endif %}
     </tr>
     {% for publicacao in publicacoes %}
       <tr>
@@ -30,23 +27,21 @@
         <td>{{ publicacao.nome or "" }}</td>
         <td>{{ publicacao.processo or "" }}</td>
         <td>{{ publicacao.cpf or "" }}</td>
-          {% if publicacao.uf == 'BA' %}
-            <td>{{ publicacao.matricula or "" }}</td>
-            <td>R$ {{ publicacao.valor or "" }}</td>
-          {% elif publicacao.uf == 'MT' %}
-            <td>{{ publicacao.cargo or "" }}</td>
-            <td>{{ publicacao.tempo_servico or "" }} Anos</td>
-          {% endif %}
+        {% if publicacao and publicacao.uf == 'BA' %}
+          <td>{{ publicacao.matricula or "" }}</td>
+          <td>R$ {{ publicacao.valor or "" }}</td>
+        {% elif publicacao and publicacao.uf == 'MT' %}
+          <td>{{ publicacao.cargo or "" }}</td>
+          <td>{{ publicacao.tempo_servico or "" }} Anos</td>
+        {% endif %}
       </tr>
     {% endfor %}
   </table>
-
+  
   <div class="export-btn-container">
     <button id="export-btn" onclick="exportToXlsx()">Exportar para Excel</button>
   </div>
-  
 {% endmacro %}
-
 
 
 {% macro display_pdf_results(results) %}
