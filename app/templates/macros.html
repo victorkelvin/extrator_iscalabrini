@@ -11,7 +11,7 @@
       <th>Nome</th>
       <th>nº Processo</th>
       <th>CPF</th>
-      {% if publicacoes|length > 0 and publicacoes[0].uf == 'MT' %}
+      {% if publicacoes and publicacoes[0].uf == 'MT' %}
         <th>Cargo</th>
         <th>Tempo de Serviço</th>
       {% else %}
