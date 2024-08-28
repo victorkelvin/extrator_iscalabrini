@@ -58,33 +58,7 @@
   </div>
 </div>
 
-<!-- <script>
 
-  console.log({{form_data | tojson}});
-  // Get the form elements
-const form = document.getElementById('search-form');
-const estadoSelect = document.getElementById('estado');
-const nomeInput = document.getElementById('nome');
-const cpfInput = document.getElementById('cpf');
-const dataPublicacaoDeInput = document.getElementById('data-publicacao-de');
-const dataPublicacaoAteInput = document.getElementById('data-publicacao-ate');
-const valorMinimoInput = document.getElementById('valor-minimo');
-const valorMaximoInput = document.getElementById('valor-maximo');
-
-const savedValues = {{form_data | tojson}};
-// Check if there is a saved session
-if (savedValues) {
-  // Retrieve the saved values
-  // Populate the form fields
-  estadoSelect.value = savedValues.estado;
-  nomeInput.value = savedValues.nome;
-  cpfInput.value = savedValues.cpf;
-  dataPublicacaoDeInput.value = savedValues.dataPublicacaoDe;
-  dataPublicacaoAteInput.value = savedValues.dataPublicacaoAte;
-  valorMinimoInput.value = savedValues.valorMinimo;
-  valorMaximoInput.value = savedValues.valorMaximo;
-}
-</script> -->
 
 <script>
   function exportToXlsx() {

@@ -42,6 +42,7 @@ def search_result():
     #     'valorMaximo': request.form['valor-maximo']
     # }
         # session['searchFormValues'] = form_values
+        
         publicacoes = pesquisar(request.form)
         return render_template('search.html', publicacoes=publicacoes, estados=lista_estados)
 
