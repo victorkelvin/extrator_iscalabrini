@@ -41,6 +41,8 @@ def extrair_data(page):
 def ba(filepath):
     pattern = r"([a-zA-Z\s\u0080-\uFFFF]+), proc. (\d+\.\d+\.\d+\.?\d+-\d+|\d+).*?(\d{8}|\d{2}\.?\d{3}\.?\d{3}-?\d{1}),.*?\$?(\d+\.?\d+,\d+)" # Quase 24h pra fazer 1 linha de código --', pqp!
     regex = re.compile(pattern, re.DOTALL)
+    retificacoes = ('RETIRATIFICAR', 'RETIFICAÇÃO', 'RETIFICAR')
+
     estado_db_id = 5
     print(f"INICIANDO EXTRATOR BAHIA: {filepath}")
     try:
@@ -60,26 +62,29 @@ def ba(filepath):
             db.session.flush()
             doe_id = novo_doe.id
             db.session.commit()
+        
         for i, page in enumerate(reader.pages):
             if i + 1 == len(reader.pages):
                 text = page.extract_text()
             else:
                 text = page.extract_text() + reader.pages[i+1].extract_text()
-
-            for match in regex.finditer(text):
-                nome = match.group(1).rsplit("\n", 1)[-1]  # remove leading whitespace and newline
-                nome = re.sub(r'^\s?[IVX]*\s', '', nome)
-                processo = match.group(2)
-                matricula = match.group(3)
-                valor = match.group(4)
-                valor = valor.replace(".", "").replace(",", ".")
-                publicao = TbPublicacoes.query.filter_by(diario_id=doe_id, processo = processo).first()
-                if not publicao:
-                    novo_lead = TbLeads(nome=nome)  # type: ignore
-                    db.session.add(novo_lead)
-                    db.session.flush()
-                    nova_publicacao = TbPublicacoes(diario_id=doe_id, lead_id=novo_lead.id, processo=processo, matricula=matricula, valor=valor)  # type: ignore
-                    db.session.add(nova_publicacao)
+            blocks = text.split('/>')
+            for block in blocks:
+                if not any(cond in block for cond in retificacoes):    
+                    for match in regex.finditer(block):
+                        nome = match.group(1).rsplit("\n", 1)[-1]  # remove leading whitespace and newline
+                        nome = re.sub(r'^\s?[IVX]*\s', '', nome)
+                        processo = match.group(2)
+                        matricula = match.group(3)
+                        valor = match.group(4)
+                        valor = valor.replace(".", "").replace(",", ".")
+                        publicao = TbPublicacoes.query.filter_by(diario_id=doe_id, processo = processo).first()
+                        if not publicao:
+                            novo_lead = TbLeads(nome=nome)  # type: ignore
+                            db.session.add(novo_lead)
+                            db.session.flush()
+                            nova_publicacao = TbPublicacoes(diario_id=doe_id, lead_id=novo_lead.id, processo=processo, matricula=matricula, valor=valor)  # type: ignore
+                            db.session.add(nova_publicacao)
 
     except Exception as e:
         print(f"ERRO: {e}")
